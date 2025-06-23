@@ -6,7 +6,7 @@ zdot_ref_func = @(t) A * omega * cos(omega * t);  % Reference velocity
 zddot_ref_func = @(t) -A * omega * omega * sin(omega*t);
 
 % Initial condition: [z; zdot]
-x0 = [1; 0];
+x0 = [0; 0];
 
 %Simulation time
 T = 100;
