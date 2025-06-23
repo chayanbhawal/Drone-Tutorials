@@ -1,4 +1,4 @@
-# Drone-Tutorials
+# Quadrotor-Tutorials
 
 Prepared by Paraj Ganchaudhuri and Chayan Bhawal, IIT Guwahati
 
