@@ -8,7 +8,7 @@ function quad2D_plot_and_animate_3D(t, x)
     hold on;
 
     % Plot path trace
-    plot3(x(:,1), x(:,2), zeros(size(x,1),1), 'b--', 'LineWidth', 1);
+    %plot3(x(:,1), x(:,2), zeros(size(x,1),1), 'b--', 'LineWidth', 1);
 
     % Initialize arms and center
     h_arm1 = plot3([0 0], [0 0], [0 0], 'k-', 'LineWidth', 3);  % front-back

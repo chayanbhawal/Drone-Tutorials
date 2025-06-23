@@ -37,5 +37,5 @@ function dx = quad2D_dynamics(t, x, p)
     end
 
     % State derivative
-    dx = [y_dot+ 0*dy/p.m; z_dot; phi_dot+1*dy/p.m; y_ddot; z_ddot; phi_ddot];
+    dx = [y_dot+ 0*dy/p.m; z_dot; phi_dot-1*dy/p.m; y_ddot; z_ddot; phi_ddot];
 end
