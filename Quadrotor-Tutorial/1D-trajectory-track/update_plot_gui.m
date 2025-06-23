@@ -6,7 +6,7 @@ function update_plot_gui(kp_slider, kv_slider, kp_val_txt, kv_val_txt, ax1, ax3,
     Kv = kv_slider.Value;
 
 
-    tspan = linspace(0, T, 500);
+    tspan = linspace(0, T, 5000);
 
     % ODE simulation
     [t, x] = ode45(@(t, x) double_integrator(t, x, z_ref_func, zdot_ref_func, zddot_ref_func,Kp, Kv,m,g), tspan, x0);

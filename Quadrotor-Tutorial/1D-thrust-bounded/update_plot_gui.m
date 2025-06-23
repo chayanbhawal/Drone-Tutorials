@@ -9,7 +9,7 @@ function update_plot_gui(kp_slider, kv_slider, kp_val_txt, kv_val_txt, ax1, ax3,
 
 
     %tspan = [0 T];
-    tspan = linspace(1,T,100);
+    tspan = linspace(1,T,1000);
 
     % ODE simulation
     [t, x] = ode45(@(t, x) double_integrator(t, x, z_ref, Kp, Kv,m,g,Tmax), tspan, x0);

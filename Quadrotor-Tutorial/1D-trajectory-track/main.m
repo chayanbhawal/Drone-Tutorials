@@ -9,7 +9,7 @@ zddot_ref_func = @(t) -A * omega * omega * sin(omega*t);
 x0 = [0; 0];
 
 %Simulation time
-T = 100;
+T = 300;
 
 %Quadrotor Mass
 m = 3;
