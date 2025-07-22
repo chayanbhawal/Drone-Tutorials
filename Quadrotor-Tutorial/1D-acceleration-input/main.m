@@ -1,4 +1,4 @@
-z_ref = 1;  %Reference trajectory
+z_ref = 2;  %Reference trajectory
     
 % Initial condition: [z; zdot]
 x0 = [0; 0];

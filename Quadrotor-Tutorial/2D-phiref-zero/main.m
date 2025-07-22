@@ -14,7 +14,7 @@ x0 = [0; 0; 0; 0; 0; 0];   % [y; z; phi; y_dot; z_dot; phi_dot]
 
 % Simulation time
 T = 10;
-tspan = linspace(0,T,2000);
+tspan = linspace(0,T,200);
 
 %% SIMULATION
 [t, x] = ode45(@(t,x) quad2D_dynamics(t, x, params), tspan, x0);

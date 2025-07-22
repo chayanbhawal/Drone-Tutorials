@@ -16,12 +16,10 @@ function dx = quad2D_dynamics(t, x, p)
     % Altitude hold controller
     T = p.m * (Kd_z*e_zd + Kp_z*e_z + p.g);
 
-     % Case-I: No control of roll angle.
-    tau_phi = 0;
-    
-    % Case-II: Reference roll angle = 0
-    %phi_des = 0; 
-    %tau_phi = Kp_phi*(phi_des - phi) + Kd_phi*(-phi_dot); 
+ 
+    % Reference roll angle = 0
+    phi_des = 0; 
+    tau_phi = Kp_phi*(phi_des - phi) + Kd_phi*(-phi_dot); 
     
     
     % Accelerations

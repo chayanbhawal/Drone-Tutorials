@@ -7,7 +7,7 @@ function quad2D_plot_and_animate_3D(t, x)
     title('Quadrotor 2D Motion (3D View with 4 Arms)');
     hold on;
 
-    
+ 
 
     % Initialize arms and center
     h_arm1 = plot3([0 0], [0 0], [0 0], 'k-', 'LineWidth', 3);  % front-back
@@ -39,4 +39,6 @@ function quad2D_plot_and_animate_3D(t, x)
 
         drawnow;
     end
+       % Plot path trace
+    plot3(x(:,1), x(:,2), zeros(size(x,1),1), 'b--', 'LineWidth', 1);
 end

@@ -26,8 +26,8 @@ params.psi_ref = 0;     % Used in outer-loop control
 x0 = zeros(12,1);
 
 % Simulation time
-T = 10;
-tspan = linspace(0,T,3000);
+T = 30;
+tspan = linspace(0,T,300);
 
 %% SIMULATION
 [t, x] = ode45(@(t,x) quad3D_dynamics(t, x, params), tspan, x0);

@@ -8,7 +8,7 @@ x0 = [0; 0];
 T = 10;
 
 % Quadrotor mass
-m=1;
+m=30;
 
 % Acceleration due to gravity
 g=9.8;
