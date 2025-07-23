@@ -1,0 +1,124 @@
+clear; clc; close all;
+
+%% Parameters
+Ts = 0.1;      % Sampling time
+Np = 20;       % Prediction horizon
+Nc = 8;        % Control horizon
+
+% Quadrotor physical constants
+m = 0.5;        % Mass (kg) %1.0; 
+g = 9.81;       % Gravity
+Ix = 0.0023; Iy = 0.0023; Iz = 0.004; % Inertia Ix = 0.02; Iy = 0.02; Iz = 0.04;
+
+
+%% Define Nonlinear MPC Controller
+nlobj = nlmpc(12, 12, 4);  % 12 states, 12 outputs, 4 inputs
+nlobj.Ts = Ts;
+nlobj.PredictionHorizon = Np;
+nlobj.ControlHorizon = Nc;
+
+% State function
+nlobj.Model.StateFcn = @(x,u) quadrotor_dynamics(x,u,m,g,Ix,Iy,Iz);
+nlobj.Model.IsContinuousTime = true;
+
+% Output function = all states
+nlobj.Model.OutputFcn = @(x,u) x;
+
+% Constraints
+nlobj.MV(1).Min = 0;     % Thrust >= 0
+nlobj.MV(1).Max = 20;
+nlobj.MV(2).Min = -1;    % Roll torque
+nlobj.MV(2).Max = 1;
+nlobj.MV(3).Min = -1;    % Pitch torque
+nlobj.MV(3).Max = 1;
+nlobj.MV(4).Min = -0.5;  % Yaw torque
+nlobj.MV(4).Max = 0.5;
+
+% Weights
+nlobj.Weights.OutputVariables = [1 1 1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1];
+nlobj.Weights.ManipulatedVariablesRate = [0.1 0.1 0.1 0.1];
+
+%% Initial Conditions
+x0 = zeros(12,1); % starting at origin
+u0 = [m*g 0 0 0]; % hover thrust
+
+%% Reference Trajectory
+Tsim = 20;
+time = 0:Ts:Tsim;
+ref = [0.5*sin(0.3*time)', 0.5*cos(0.3*time)', 1 + 0*sin(0.1*time)'];  % N × 3
+ref_full = [ref, zeros(length(time), 9)];  % N × 12
+
+
+
+%% Simulation
+xHistory = x0';
+uHistory = [];
+tHistory = 0;
+x = x0;
+mv = u0;
+
+for k = 1:length(time)
+    % Reference (positions only)
+    yref = ref_full(k,:);
+
+    % Compute control action
+    [mv, info] = nlmpcmove(nlobj, x, mv, yref);
+
+    % Simulate system using ode45
+    [~, xsim] = ode45(@(t,x) quadrotor_dynamics(x, mv, m, g, Ix, Iy, Iz), [0 Ts], x);
+    x = xsim(end,:)';
+
+    % Store
+    xHistory = [xHistory; x'];
+    uHistory = [uHistory; mv];
+end
+
+%% Plotting
+time = [time time(end)]';
+ref_full = [ref_full;ref_full(end,:)];
+quad3D_plot_and_animate_3D(time, xHistory);
+
+
+%% PLOT RESULTS
+figure('Color', 'w');
+
+subplot(3,3,1);
+plot(time, ref_full(:,1), 'LineWidth', 1.5); hold on;
+plot(time, xHistory(:,1), 'LineWidth', 1.5); ylabel('x (m)'); title('Position X');legend('x^{ref}','x'); grid on;
+
+subplot(3,3,2);
+plot(time, ref_full(:,2), 'LineWidth', 1.5); hold on;
+plot(time, xHistory(:,2), 'LineWidth', 1.5); ylabel('y (m)'); title('Position Y');legend('y^{ref}','x'); grid on;
+
+subplot(3,3,3);
+plot(time, ref_full(:,3), 'LineWidth', 1.5); hold on;
+plot(time, xHistory(:,3), 'LineWidth', 1.5); ylabel('z (m)'); title('Position Z');legend('z^{ref}','x'); grid on;
+
+subplot(3,3,4);
+plot(time, xHistory(:,4)*180/pi, 'LineWidth', 1.5); ylabel('\phi (deg)'); title('Roll'); grid on;
+
+subplot(3,3,5);
+plot(time, xHistory(:,5)*180/pi, 'LineWidth', 1.5); ylabel('\theta (deg)'); title('Pitch'); grid on;
+
+subplot(3,3,6);
+plot(time, xHistory(:,6)*180/pi, 'LineWidth', 1.5); ylabel('\psi (deg)'); title('Yaw'); grid on;
+
+subplot(3,3,7);
+plot(time, xHistory(:,7), 'LineWidth', 1.5); ylabel('ẋ (m/s)'); xlabel('Time (s)'); title('Velocity X'); grid on;
+
+subplot(3,3,8);
+plot(time, xHistory(:,8), 'LineWidth', 1.5); ylabel('ẏ (m/s)'); xlabel('Time (s)'); title('Velocity Y'); grid on;
+
+subplot(3,3,9);
+plot(time, xHistory(:,9), 'LineWidth', 1.5); ylabel('ż (m/s)'); xlabel('Time (s)'); title('Velocity Z'); grid on;
+
+
+
+% figure;
+% subplot(3,1,1)
+% plot(time, ref(:,1), 'r--', time, xHistory(2:end,1), 'b'); ylabel('X (m)'); legend('Ref','Actual')
+% subplot(3,1,2)
+% plot(time, ref(:,2), 'r--', time, xHistory(2:end,2), 'b'); ylabel('Y (m)')
+% subplot(3,1,3)
+% plot(time, ref(:,3), 'r--', time, xHistory(2:end,3), 'b'); ylabel('Z (m)')
+% xlabel('Time (s)'); sgtitle('Trajectory Tracking with Nonlinear MPC');
