@@ -43,6 +43,7 @@ function quad3D_plot_and_animate_3D(t, x)
         set(h_time, 'String', sprintf('t = %.2f s', t(i)));
 
         drawnow;
+         pause(0.2);  % Slower animation
     end
     % Trace path
     plot3(x(:,1), x(:,2), x(:,3), 'b--', 'LineWidth', 1);
